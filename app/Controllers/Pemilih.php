@@ -4,28 +4,16 @@ namespace App\Controllers;
 
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
-use App\Models\CalonrtModel;
+use App\Models\PemilihModel;
 
-class Calonrt extends ResourceController
+class Pemilih extends ResourceController
 {
     use ResponseTrait;
     // get all Calon RT
     public function index()
     {
-        $model = new CalonrtModel();
+        $model = new PemilihModel();
         $data = $model->findAll();
-        $response = [
-            'status'   => 200,
-            'data' => $data
-        ];
-
-        return $this->respond($response);
-    }
-
-    public function totalPoint()
-    {
-        $db = db_connect();
-        $data =  $db->query('SELECT SUM(poin) AS totalPemilih FROM `calonrt`')->getRowArray();
         $response = [
             'status'   => 200,
             'data' => $data
@@ -37,16 +25,16 @@ class Calonrt extends ResourceController
     // update Calon RT
     public function update($id = null)
     {
-        $model = new CalonrtModel();
+        $model = new PemilihModel();
         $json = $this->request->getJSON();
         if ($json) {
             $data = [
-                'poin' => $json->poin
+                'pilih' => $json->pilih
             ];
         } else {
             $input = $this->request->getRawInput();
             $data = [
-                'poin' => $input['poin']
+                'pilih' => $input['pilih']
             ];
         }
         // Insert to Database
@@ -61,12 +49,52 @@ class Calonrt extends ResourceController
         return $this->respond($response);
     }
 
+    public function tambah($nama)
+    {
+        $db = db_connect();
+        $data =  $db->query("INSERT INTO pemilih (nama) VALUES  ('$nama')");
+        $response = [
+            'status'   => 200,
+            'data' => $data
+        ];
+
+        return $this->respond($response);
+    }
+
+    public function doorprize()
+    {
+        $db = db_connect();
+        $data =  $db->query("SELECT
+                                nama
+                            FROM
+                                pemilih
+                            ORDER BY
+                                RAND()")->getResultArray();
+        $response = [
+            'status'   => 200,
+            'data' => $data
+        ];
+
+        return $this->respond($response);
+    }
+
+    public function belomMemilih()
+    {
+        $db = db_connect();
+        $data =  $db->query("SELECT * FROM pemilih WHERE pilih='0'")->getResultArray();
+        $response = [
+            'status'   => 200,
+            'data' => $data
+        ];
+
+        return $this->respond($response);
+    }
 
 
     // get single Calon RT
     public function show($id = null)
     {
-        $model = new CalonrtModel();
+        $model = new PemilihModel();
         $data = $model->getWhere(['id' => $id])->getResult();
         if ($data) {
             $response = [

@@ -31,8 +31,12 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
+$routes->get('calonrt/totalPoint', 'calonrt::totalPoint');
 $routes->resource('calonrt');
-$routes->resource('poin');
+$routes->get('pemilih/tambah/(:segment)', 'pemilih::tambah/$1');
+$routes->get('pemilih/belomMemilih', 'pemilih::belomMemilih');
+$routes->get('pemilih/doorprize', 'pemilih::doorprize');
+$routes->resource('pemilih');
 // $routes->get('calonrt',                 'Calonrt::index');
 
 /*
